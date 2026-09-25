@@ -1,4 +1,4 @@
-# SEKHMET.QUEST Map
+# SEFKHET-ABWY Map
 
 A single-purpose Progressive Web App: an ArcGIS map that opens centred on wherever
 the device thinks it is. Black on white, IBM Plex Mono, no accounts, no database.
