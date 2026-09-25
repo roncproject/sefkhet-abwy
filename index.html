@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>SEKHMET.QUEST Map</title>
+  <meta name="description" content="A map that opens where you are." />
+
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="color-scheme" content="light" />
+  <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- iOS home-screen behaviour (iOS ignores parts of the manifest) -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="SEKHMET" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SEKHMET.QUEST Map" />
+  <meta property="og:description" content="A map that opens where you are." />
+  <meta property="og:image" content="/icons/icon-512.png" />
+
+  <!-- Map servers the page will talk to: start the TLS handshakes early. -->
+  <link rel="preconnect" href="https://js.arcgis.com" crossorigin />
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin />
+</head>
+<body>
+  <noscript>
+    <p style="font-family: monospace; padding: 1rem;">This map needs JavaScript to run.</p>
+  </noscript>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

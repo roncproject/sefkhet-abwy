@@ -1,0 +1,310 @@
+/* ================================================================
+   SEKHMET.QUEST Map
+   Black on white, IBM Plex Mono throughout. Two colours, one family:
+   hierarchy comes from size, weight and 2px rules, not from tints.
+   ================================================================ */
+
+:root {
+  --ink: #000000;
+  --paper: #ffffff;
+  --veil: rgba(255, 255, 255, 0.92);
+
+  --font: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace;
+
+  --rule: 2px;
+  --bar-h: 56px;
+  --gap: 12px;
+  --hit: 44px;                       /* minimum touch target */
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+}
+
+a { color: inherit; text-underline-offset: 0.2em; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+button { font: inherit; color: inherit; }
+::selection { background: var(--ink); color: var(--paper); }
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--paper);
+}
+
+/* ── Frame ─────────────────────────────────────────────────────── */
+.app {
+  display: grid;
+  grid-template-rows: calc(var(--bar-h) + var(--safe-top)) 1fr;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.stage { position: relative; min-height: 0; overflow: hidden; }
+
+/* ── Top bar ───────────────────────────────────────────────────── */
+.topbar {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--safe-top) calc(6px + var(--safe-right)) 0 calc(20px + var(--safe-left));
+  background: var(--paper);
+  border-bottom: var(--rule) solid var(--ink);
+}
+
+.wordmark {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.menu { position: relative; }
+
+.menu-button {
+  display: grid;
+  place-items: center;
+  width: var(--hit);
+  height: var(--hit);
+  padding: 0;
+  background: var(--paper);
+  border: 0;
+  cursor: pointer;
+}
+
+.menu-bars { display: grid; gap: 5px; width: 22px; }
+.menu-bars span {
+  display: block;
+  height: 2px;
+  background: var(--ink);
+  transition: transform 160ms ease, opacity 120ms ease;
+}
+.menu-button.is-open .menu-bars span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-button.is-open .menu-bars span:nth-child(2) { opacity: 0; }
+.menu-button.is-open .menu-bars span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.menu-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: var(--paper);
+  border: var(--rule) solid var(--ink);
+}
+.menu-list[hidden] { display: none; }
+.menu-list li + li { border-top: 1px solid var(--ink); }
+
+.menu-list a {
+  display: block;
+  padding: 13px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.menu-list a:hover { background: var(--ink); color: var(--paper); }
+.menu-list a[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 2px; }
+
+/* ── Map ───────────────────────────────────────────────────────── */
+.map-shell, .map-canvas { position: absolute; inset: 0; }
+.map-canvas { background: var(--paper); }
+
+/* The SDK's attribution line, in the app's typeface. */
+.map-canvas .esri-attribution,
+.map-canvas .esri-attribution * {
+  font-family: var(--font) !important;
+  font-size: 11px !important;
+  color: var(--ink) !important;
+}
+.map-canvas .esri-view-surface--inset-outline:focus::after { outline: none; }
+
+.map-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+  background: var(--paper);
+}
+
+.cover-text { margin: 0; max-width: 34ch; font-size: 16px; font-weight: 500; }
+.cover-text.is-busy::after {
+  content: '';
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 0.3em;
+  vertical-align: -0.2em;
+  background: var(--ink);
+  animation: cursor 1s steps(1) infinite;
+}
+@keyframes cursor { 50% { opacity: 0; } }
+
+/* ── Map controls (bottom right) ───────────────────────────────── */
+.map-controls {
+  position: absolute;
+  right: calc(var(--gap) + var(--safe-right));
+  bottom: calc(34px + var(--safe-bottom));
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: var(--hit);
+  height: var(--hit);
+  padding: 0;
+  background: var(--paper);
+  border: var(--rule) solid var(--ink);
+  cursor: pointer;
+}
+.icon-button + .icon-button { margin-top: calc(-1 * var(--rule)); }
+.icon-button:first-child { margin-bottom: 8px; }
+.icon-button + .icon-button:nth-child(2) { margin-top: 0; }
+.icon-button svg { width: 22px; height: 22px; }
+.icon-button:hover { background: var(--ink); color: var(--paper); }
+.icon-button:focus-visible { position: relative; z-index: 1; }
+
+/* ── Position readout (bottom left) ────────────────────────────── */
+.readout {
+  position: absolute;
+  left: calc(var(--gap) + var(--safe-left));
+  bottom: calc(34px + var(--safe-bottom));
+  z-index: 10;
+  max-width: min(360px, calc(100% - var(--hit) - 3 * var(--gap)));
+  padding: 10px 14px 12px;
+  background: var(--veil);
+  border: var(--rule) solid var(--ink);
+}
+.readout.is-collapsed { padding: 0; border-width: var(--rule); }
+
+.readout-toggle {
+  float: right;
+  margin: -6px -8px 0 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.readout.is-collapsed .readout-toggle { float: none; margin: 0; padding: 10px 14px; }
+
+.readout p { margin: 0; }
+
+.readout-coords {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.1em;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.readout-source { margin-top: 4px !important; font-size: 13px; line-height: 1.45; }
+.readout-hint {
+  margin-top: 8px !important;
+  padding-top: 8px;
+  border-top: 1px solid var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ── Panel (About, Legal, Contact) ─────────────────────────────── */
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  width: min(460px, 100%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--paper);
+  border-left: var(--rule) solid var(--ink);
+  padding-bottom: calc(40px + var(--safe-bottom));
+}
+
+.panel-head {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px 14px 28px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--ink);
+}
+.panel-head h1 { margin: 0; font-size: 26px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; }
+.panel-head h1:focus { outline: none; }
+
+.text-button {
+  min-height: var(--hit);
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--paper);
+  border: var(--rule) solid var(--ink);
+  cursor: pointer;
+}
+.text-button:hover { background: var(--ink); color: var(--paper); }
+
+.panel-body { padding: 8px 28px 0; }
+
+.prose { max-width: 62ch; }
+.prose p, .prose ul { margin: 0 0 14px; font-size: 15px; line-height: 1.65; }
+.prose .lede { margin: 16px 0 20px; font-size: 18px; font-weight: 500; line-height: 1.45; }
+.prose h2 { margin: 30px 0 8px; font-size: 16px; font-weight: 600; line-height: 1.3; }
+.prose ul { padding-left: 1.2em; }
+.prose li { margin-bottom: 4px; }
+.prose li::marker { content: '– '; }
+
+.contact-list { margin: 0 0 22px; border-top: 1px solid var(--ink); }
+.contact-list div { padding: 12px 0; border-bottom: 1px solid var(--ink); }
+.contact-list dt { font-size: 13px; }
+.contact-list dd { margin: 0; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+
+/* ── Small screens ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  :root { --bar-h: 52px; }
+  .panel { border-left: 0; }
+  .panel-head { padding-left: 20px; }
+  .panel-body { padding: 8px 20px 0; }
+  .readout-coords { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
