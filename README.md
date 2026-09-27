@@ -40,6 +40,10 @@ npm run dev                     # http://localhost:5173
 | `npm run dev` | Development server with live reload |
 | `npm run build` | Production build in `dist/` |
 | `npm run preview` | Serves the build, with the service worker, on port 4173 |
+| `npm run test:e2e` | Builds the app and runs the Playwright end-to-end tests in `e2e/` |
+
+The end-to-end tests need Chromium once: `npx playwright install chromium`. They
+also run on GitHub Actions for every push and pull request to `main`.
 
 The API functions also run locally, inside Vite. To simulate the IP-based position,
 set `MOCK_IP_LOCATION` before starting, for example
