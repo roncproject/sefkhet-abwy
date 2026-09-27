@@ -1,74 +1,85 @@
 # SEFKHET-ABWY Map
 
-A single-purpose Progressive Web App: an ArcGIS map that opens centred on wherever
-the device thinks it is. Black on white, IBM Plex Mono, no accounts, no database.
+A web map that opens centred on your location and shows public places nearby.
+It is a Progressive Web App: it can be installed on a phone or desktop and keeps
+working with a weak connection.
 
-Rewritten from the v4 React + Java 17 / Spring Boot application that ran in a Docker
-container on AWS Elastic Beanstalk. The Java backend is gone; the app is a static
-Vite build plus two small Vercel Functions.
+## What it does
 
-- **What changed and why:** [REPORT.md](REPORT.md)
-- **How to run it on Windows 11 and deploy it to Vercel:** [MANUAL.md](MANUAL.md)
+- Asks the browser for the device position (GPS, Wi-Fi or cell) and centres the map on it.
+- Shows an approximate position from the visitor's IP address while waiting, or when
+  location access is refused. Falls back to Rotterdam if neither is available.
+- Marks public places within 2 km of the map centre, loaded from a Supabase database.
+- Has About, Legal and Contact panels, each with its own URL.
+- Stores no accounts, cookies or analytics. The position stays in the browser.
 
 ## Stack
 
 | Layer | Technology |
 |---|---|
-| Front end | React 19 + Vite 8, no UI framework, no router library |
-| Map | ArcGIS Maps SDK for JavaScript 5.1 (`@arcgis/core`), core API only |
-| Map data | OpenStreetMap raster tiles, no API key, no ArcGIS login |
-| Location | Browser Geolocation API, with an IP-based fallback from Vercel |
-| Back end | Two Vercel Functions (`/api/geo`, `/api/health`) |
-| PWA | Web app manifest + Workbox service worker (`vite-plugin-pwa`) |
-| Type | IBM Plex Mono, self-hosted from npm |
-| Hosting | Vercel (static build on the CDN + Functions) |
+| Front end | React 19, Vite 8 |
+| Map | ArcGIS Maps SDK for JavaScript 5.1, core API only, no API key |
+| Map tiles | OpenStreetMap |
+| Back end | Vercel Functions in `api/` |
+| Data | Supabase (Postgres), read server-side only |
+| PWA | Web app manifest, Workbox service worker (`vite-plugin-pwa`) |
+| Hosting | Vercel |
 
-## Quick start
+## Getting started
+
+Requires Node.js 24 (see `.nvmrc`; at least 20.19).
 
 ```powershell
 npm install
-npm run dev          # http://localhost:5173, live reload
-npm run build        # production build into dist/
-npm run preview      # http://localhost:4173, the build + service worker
+copy .env.example .env.local   # then fill in the Supabase values
+npm run dev                     # http://localhost:5173
 ```
 
-Location needs a secure context, which `http://localhost` counts as. Opening the dev
-server over your LAN IP from a phone will not get a position; see MANUAL.md for how to
-test on a phone.
+| Command | Result |
+|---|---|
+| `npm run dev` | Development server with live reload |
+| `npm run build` | Production build in `dist/` |
+| `npm run preview` | Serves the build, with the service worker, on port 4173 |
+
+The API functions also run locally, inside Vite. To simulate the IP-based position,
+set `MOCK_IP_LOCATION` before starting, for example
+`$env:MOCK_IP_LOCATION = "51.9225,4.4792,Rotterdam,NL"`.
+
+## Configuration
+
+| Variable | Used by | Purpose |
+|---|---|---|
+| `SUPABASE_URL` | `api/places.js` | Supabase project URL |
+| `SUPABASE_SECRET_KEY` | `api/places.js` | Secret key, server-side only |
+| `MOCK_IP_LOCATION` | local development | Fake IP position, `lat,lon[,city[,country]]` |
+
+The database needs a `places_near(lat, lon, radius_m)` function that returns only
+public places.
+
+## API
+
+| Endpoint | Returns |
+|---|---|
+| `GET /api/geo` | Approximate position from the visitor's IP (Vercel headers) |
+| `GET /api/places?lat=..&lon=..` | Public places within 2 km |
+| `GET /api/health` | Status, region and environment |
 
 ## Layout
 
 ```
-sefkhet-abwy/
-├── api/
-│   ├── geo.js              approximate location from the visitor's IP (Vercel headers)
-│   └── health.js           liveness check, replaces /actuator/health
-├── public/
-│   ├── icons/              app icons, black on white
-│   └── robots.txt
-├── src/
-│   ├── main.jsx            entry point, fonts, service-worker registration
-│   ├── App.jsx             map + top bar + panel, URL handling
-│   ├── content.jsx         About, Legal and Contact copy
-│   ├── styles.css          the whole design system, ~350 lines
-│   ├── components/
-│   │   ├── TopBar.jsx      wordmark and the hamburger menu
-│   │   ├── MapCanvas.jsx   the ArcGIS map, controls and centring logic
-│   │   ├── LocationReadout.jsx  live coordinates and their provenance
-│   │   ├── InfoPanel.jsx   the About / Legal / Contact sheet
-│   │   └── arcgis.js       lazy loader for the SDK modules
-│   └── location/
-│       └── useDeviceLocation.js  GPS first, IP second, default third
-├── vite/local-api.js       runs api/*.js locally, as Vercel does in production
-├── vite.config.js          build, PWA and service-worker configuration
-└── vercel.json             routing, headers and caching for Vercel
+api/            Vercel Functions: geo, places, health
+public/         icons, robots.txt
+src/
+  App.jsx       top-level layout and URL handling
+  content.jsx   About, Legal and Contact text
+  components/   map, top bar, panels, location readout
+  location/     device, IP and default position logic
+vite/           runs api/ locally during development
+vercel.json     routing, security headers, caching
 ```
 
-## Routes
+## Deployment
 
-| URL | What it is |
-|---|---|
-| `/` | The map |
-| `/about`, `/legal`, `/contact` | The map with that panel open |
-| `/api/geo` | `{ available, latitude, longitude, city, country }` |
-| `/api/health` | `{ status: "UP", region, environment }` |
+With the GitHub repository connected to Vercel, each push deploys. Set the Supabase
+variables in the Vercel project settings. Step-by-step instructions are in
+[MANUAL.md](MANUAL.md).
