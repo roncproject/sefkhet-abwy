@@ -44,8 +44,8 @@ export default function TopBar({ current, onNavigate }) {
 
   return (
     <header className="topbar">
-      <a className="wordmark" href="/" onClick={(e) => follow(e, null)} aria-label="SEKHMET.QUEST, back to the map">
-        SEKHMET.QUEST
+      <a className="wordmark" href="/" onClick={(e) => follow(e, null)} aria-label="SEFKHET-ABWY, back to the map">
+        SEFKHET-ABWY
       </a>
 
       <nav className="menu" ref={wrapRef} aria-label="Site">

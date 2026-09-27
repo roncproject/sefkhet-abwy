@@ -39,7 +39,7 @@ test on a phone.
 ## Layout
 
 ```
-sekhmet-vercel/
+sefkhet-abwy/
 ├── api/
 │   ├── geo.js              approximate location from the visitor's IP (Vercel headers)
 │   └── health.js           liveness check, replaces /actuator/health

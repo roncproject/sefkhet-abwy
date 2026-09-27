@@ -1,14 +1,14 @@
 /**
  * Copy for the three menu pages.
  *
- * The Sekhmet paragraph and the e-mail addresses are carried over from the
- * original About and Privacy pages. Everything about hosting, data and
- * third parties is rewritten, because the original text described a
- * newsletter, a database and AWS hosting that no longer exist.
+ * The e-mail addresses are placeholders until the domain is decided.
+ * Everything about hosting, data and third parties is rewritten, because the
+ * original text described a newsletter, a database and AWS hosting that no
+ * longer exist.
  */
 
-const HELLO = 'hello@sekhmet.quest';
-const PRIVACY = 'privacy@sekhmet.quest';
+const HELLO = 'hello@sefkhet-abwy.quest';
+const PRIVACY = 'privacy@sefkhet-abwy.quest';
 
 function About() {
   return (
@@ -27,18 +27,28 @@ function About() {
         no database.
       </p>
 
-      <h2>Sekhmet</h2>
+      <h2>Sefkhet-Abwy</h2>
       <p>
-        In Egyptian mythology, Sekhmet is one of the oldest known deities. Her name means
-        “the powerful one”. She is depicted as a lioness, the fiercest hunter known to the
-        Egyptians, and was both a goddess of war and a goddess of healing and medicine.
+        In Egyptian mythology, Sefkhet-Abwy is the goddess of writing, record-keeping and
+        measurement. Her name means “she of the seven horns”. She is shown as a woman in a
+        leopard-skin robe, wearing a seven-pointed star on her head beneath a pair of
+        downturned horns.
+      </p>
+      <p>
+        She kept the records of the world: the years of each king’s reign, the counts of
+        people and goods, the books of the temple libraries. With the king she performed
+        the rite of “stretching the cord”, sighting the stars to lay out the foundations of
+        a new temple on the ground. She was the first surveyor, and the goddess of every
+        map.
       </p>
 
+      {/* "The quest" section removed pending review:
       <h2>The quest</h2>
       <p>
         A quest is a journey toward a specific goal. The hero faces obstacles, gains
         wisdom and returns changed. Every quest starts by knowing where you stand.
       </p>
+      */}
 
       <h2>Built with</h2>
       <ul>

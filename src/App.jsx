@@ -5,7 +5,7 @@ import InfoPanel from './components/InfoPanel.jsx';
 import { PAGES, pageFromPath } from './content.jsx';
 import { useDeviceLocation } from './location/useDeviceLocation.js';
 
-const SITE = 'SEKHMET.QUEST';
+const SITE = 'SEFKHET-ABWY';
 
 /**
  * The whole application: a full-screen map, a top bar with the menu, and an

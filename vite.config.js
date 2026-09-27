@@ -52,8 +52,8 @@ export default defineConfig(({ mode }) => {
 
         manifest: {
           id: '/',
-          name: 'SEKHMET.QUEST Map',
-          short_name: 'SEKHMET',
+          name: 'SEFKHET-ABWY Map',
+          short_name: 'SEFKHET',
           description: 'A map that opens where you are.',
           lang: 'en',
           start_url: '/',

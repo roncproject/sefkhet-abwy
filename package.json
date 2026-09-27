@@ -1,9 +1,9 @@
 {
-  "name": "sekhmet-map",
+  "name": "sefkhet-abwy",
   "private": true,
   "version": "5.0.0",
   "type": "module",
-  "description": "SEKHMET.QUEST map: a location-aware ArcGIS map as a Progressive Web App, hosted on Vercel",
+  "description": "SEFKHET-ABWY map: a location-aware ArcGIS map as a Progressive Web App, hosted on Vercel",
   "engines": {
     "node": ">=20.19"
   },

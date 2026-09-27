@@ -3,7 +3,7 @@
 **From:** `sekhmet-react` v4 — React 18 front end served by a Java 17 / Spring Boot 3.2
 application with PostgreSQL, built into a Docker image and deployed to AWS Elastic Beanstalk.
 
-**To:** `sekhmet-vercel` v5 — a static React 19 / Vite build on Vercel's CDN, two small
+**To:** `sefkhet-abwy` v5 — a static React 19 / Vite build on Vercel's CDN, two small
 Vercel Functions, one ArcGIS map centred on the device's own location, an installable PWA.
 
 ---

@@ -32,11 +32,11 @@ fake a GPS position and simulate being offline.
 
 ## 2. Install and run
 
-Unzip the project somewhere without spaces or OneDrive sync in the path — for example `C:\dev\sekhmet-vercel`.
+Unzip the project somewhere without spaces or OneDrive sync in the path — for example `C:\dev\sefkhet-abwy`.
 OneDrive folders can make file watching unreliable.
 
 ```powershell
-cd C:\dev\sekhmet-vercel
+cd C:\dev\sefkhet-abwy
 npm install
 npm run dev
 ```
@@ -157,7 +157,7 @@ Good for a first deployment, and it does not need a Git repository.
 ```powershell
 npm install --global vercel
 vercel login
-cd C:\dev\sekhmet-vercel
+cd C:\dev\sefkhet-abwy
 vercel
 ```
 
@@ -184,12 +184,12 @@ Every push then deploys itself, and every pull request gets its own preview URL.
 1. Put the project in a Git repository and push it to GitHub, GitLab or Bitbucket:
 
    ```powershell
-   cd C:\dev\sekhmet-vercel
+   cd C:\dev\sefkhet-abwy
    git init
    git add .
-   git commit -m "SEKHMET map: Vercel rewrite"
+   git commit -m "SEFKHET-ABWY map: Vercel rewrite"
    git branch -M main
-   git remote add origin https://github.com/<you>/sekhmet-vercel.git
+   git remote add origin https://github.com/<you>/sefkhet-abwy.git
    git push -u origin main
    ```
 
@@ -229,7 +229,7 @@ No environment variables are needed. There is nothing to configure for the Funct
 
 ### Custom domain
 
-Vercel dashboard → your project → **Settings** → **Domains** → add `sekhmet.quest`. Vercel shows the
+Vercel dashboard → your project → **Settings** → **Domains** → add `sefkhet-abwy.quest`. Vercel shows the
 DNS records to create at your registrar (usually an `A` record for the apex and a `CNAME` for `www`).
 The TLS certificate is issued automatically once DNS resolves.
 
