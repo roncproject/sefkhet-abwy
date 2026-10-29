@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { loadArcgis, createBasemap } from './arcgis.js';
 import LocationReadout from './LocationReadout.jsx';
+import MonumentCard from './MonumentCard.jsx';
+
+/**
+ * Monuments load from this zoom level (about street level) upward. The lookup
+ * covers 2 km around the centre; zoomed further out, that would show a small
+ * cluster in the middle of a much larger area.
+ */
+const MONUMENTS_MIN_ZOOM = 14;
 
 /** Zoom level that frames a position of the given accuracy (metres). */
 function zoomFor(location) {
@@ -59,11 +67,11 @@ function positionGraphics(m, loc) {
   return graphics;
 }
 
-/** Map symbols for a public places result, in the app's black-on-white palette. */
+/** Map symbols for nearby monuments, in the app's black-on-white palette. */
 function placeGraphics(m, places) {
   return places.map((p) => new m.Graphic({
     geometry: new m.Point({ longitude: p.longitude, latitude: p.latitude }),
-    attributes: { id: p.id, name: p.name, kind: p.kind },
+    attributes: { ...p },
     symbol: {
       type: 'simple-marker', style: 'square', size: 9,
       color: INK, outline: { color: PAPER, width: 1.5 },
@@ -76,10 +84,15 @@ function placeGraphics(m, places) {
  * contents. Called whenever the view becomes stationary (see the
  * reactiveUtils.watch below) — never on every frame, per the documentation's
  * guidance in section 5.5. Aborts a still-inflight request before starting
- * the next one, so a quick pan can't resolve out of order.
+ * the next one, so a quick pan can't resolve out of order. Below
+ * MONUMENTS_MIN_ZOOM it only clears the layer.
  */
 async function fetchPlaces(m, view, layer, abortRef) {
   abortRef.current?.abort();
+  if (view.zoom < MONUMENTS_MIN_ZOOM) {
+    layer.removeAll();
+    return;
+  }
   const controller = new AbortController();
   abortRef.current = controller;
 
@@ -93,7 +106,7 @@ async function fetchPlaces(m, view, layer, abortRef) {
     layer.removeAll();
     layer.addMany(placeGraphics(m, places ?? []));
   } catch (err) {
-    if (err.name !== 'AbortError') console.error('Failed to load nearby places:', err);
+    if (err.name !== 'AbortError') console.error('Failed to load nearby monuments:', err);
   }
 }
 
@@ -111,6 +124,8 @@ export default function MapCanvas({ location }) {
   const [status, setStatus] = useState('waiting'); // waiting | loading | ready | error
   const [attempt, setAttempt] = useState(0);
   const [offline, setOffline] = useState(() => !navigator.onLine);
+  const [zoomedOut, setZoomedOut] = useState(false);
+  const [monument, setMonument] = useState(null);   // the tapped monument, if any
 
   locationRef.current = location;
   const haveCentre = location.phase !== 'locating';
@@ -144,7 +159,7 @@ export default function MapCanvas({ location }) {
         const layer = new m.GraphicsLayer({ title: 'Your position', listMode: 'hide' });
         layerRef.current = layer;
 
-        const placesLayer = new m.GraphicsLayer({ title: 'Nearby places', listMode: 'hide' });
+        const placesLayer = new m.GraphicsLayer({ title: 'Nearby monuments', listMode: 'hide' });
         placesLayerRef.current = placesLayer;
 
         view = new m.MapView({
@@ -170,12 +185,29 @@ export default function MapCanvas({ location }) {
         handles.push(view.on('mouse-wheel', () => { userMovedRef.current = true; }));
         handles.push(view.on('key-down', () => { userMovedRef.current = true; }));
 
-        // Nearby places, refetched each time the view settles rather than on
+        // Nearby monuments, refetched each time the view settles rather than on
         // every frame while panning or zooming.
         handles.push(m.reactiveUtils.watch(
           () => view.stationary,
-          (stationary) => { if (stationary) fetchPlaces(m, view, placesLayer, placesAbortRef); },
+          (stationary) => {
+            if (!stationary) return;
+            setZoomedOut(view.zoom < MONUMENTS_MIN_ZOOM);
+            fetchPlaces(m, view, placesLayer, placesAbortRef);
+          },
         ));
+
+        // A tap on a monument opens its card; a tap anywhere else closes it.
+        handles.push(view.on('click', (event) => {
+          view.hitTest(event, { include: [placesLayer] }).then(({ results }) => {
+            const hit = results.find((r) => r.type === 'graphic');
+            setMonument(hit ? { ...hit.graphic.attributes } : null);
+          }).catch(() => {});
+        }));
+        handles.push(view.on('pointer-move', (event) => {
+          view.hitTest(event, { include: [placesLayer] }).then(({ results }) => {
+            if (view.container) view.container.style.cursor = results.length ? 'pointer' : '';
+          }).catch(() => {});
+        }));
 
         return view.when(() => { if (!cancelled) setStatus('ready'); });
       })
@@ -268,6 +300,10 @@ export default function MapCanvas({ location }) {
 
       {status === 'ready' && (
         <>
+          {monument && <MonumentCard monument={monument} onClose={() => setMonument(null)} />}
+          {zoomedOut && !monument && (
+            <p className="map-hint" role="status">Zoom in to see monuments</p>
+          )}
           <LocationReadout location={location} />
           <div className="map-controls" role="group" aria-label="Map controls">
             <button type="button" className="icon-button" onClick={recentre}

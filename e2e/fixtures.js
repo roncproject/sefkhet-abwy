@@ -17,9 +17,23 @@ export const IP_GEO = {
   city: 'Amsterdam', region: 'NH', country: 'NL',
 };
 
+/**
+ * What /api/places answers: two real monuments. The first is Hotel New York
+ * itself, moved onto the device position so it sits exactly at the map centre.
+ */
 export const PLACES = [
-  { id: 1, name: 'Hotel New York', kind: 'restaurant', latitude: 51.9054, longitude: 4.4874 },
-  { id: 2, name: 'Museum Boijmans Van Beuningen', kind: 'museum', latitude: 51.9144, longitude: 4.4728 },
+  {
+    id: '23281.00', number: 513872, name: 'v.m. Kant. Holland Amerika Lijn', type: 'Kantoorgebouw',
+    address: 'Koninginnenhoofd 1', place: 'Rotterdam',
+    url: 'https://monumentenregister.cultureelerfgoed.nl/monumenten/513872',
+    latitude: DEVICE.latitude, longitude: DEVICE.longitude,
+  },
+  {
+    id: '19826.00', number: 32847, name: null, type: 'Vergadering en vereniging',
+    address: 'Veerkade 10', place: 'Rotterdam',
+    url: 'https://monumentenregister.cultureelerfgoed.nl/monumenten/32847',
+    latitude: 51.9079, longitude: 4.4806,
+  },
 ];
 
 // Any valid PNG will do as a map tile; the app icon is already in the repo.
