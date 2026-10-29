@@ -11,7 +11,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "import:monuments": "node scripts/import-monuments.js"
   },
   "dependencies": {
     "@arcgis/core": "^5.1.24",
