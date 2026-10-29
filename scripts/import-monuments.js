@@ -119,8 +119,8 @@ async function fetchDetails(objectNumbers) {
       name: b.name?.value ?? null,
       address: b.address?.value ?? null,
       place: b.place?.value ?? b.municipality?.value ?? null,
-      // Labels carry a register code such as "Woonhuis(K)" or "Boerderij (M)".
-      category: b.category?.value.replace(/\s*\([A-Z]\)$/, '') ?? null,
+      // Labels carry a register code such as "Woonhuis(K)", "Winkel (G2)" or "Brug (TFU)".
+      category: b.category?.value.replace(/\s*\([A-Z]+\d*\)\s*$/, '') ?? null,
     });
   }
   return details;

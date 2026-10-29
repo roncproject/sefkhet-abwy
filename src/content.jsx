@@ -13,7 +13,7 @@ const PRIVACY = 'privacy@sefkhet-abwy.quest';
 function About() {
   return (
     <>
-      <p className="lede">A map that opens where you are.</p>
+      <p className="lede">A map that opens where you are, and shows the national monuments around you.</p>
       <p>
         When you open the app, it asks your device for its position and centres the map
         there. A solid dot marks a position your device measured, with a circle showing
@@ -22,9 +22,13 @@ function About() {
         access is switched off.
       </p>
       <p>
-        Nothing about your position leaves your browser except what map servers see when
-        they send tiles for the area on screen. The app has no account, no tracking and
-        no database.
+        Zoom in to street level and a black square marks each rijksmonument, a building or
+        site on the Dutch national register of monuments. Tap a square for its name or type,
+        its address and a link to its entry in the official register.
+      </p>
+      <p>
+        The app has no account and no tracking. To find the monuments on screen, it sends
+        the centre of the map to its own server; see Legal for what that involves.
       </p>
 
       <h2>Sefkhet-Abwy</h2>
@@ -54,6 +58,7 @@ function About() {
       <ul>
         <li>ArcGIS Maps SDK for JavaScript by Esri</li>
         <li>Map data from OpenStreetMap contributors</li>
+        <li>Monument data from the Rijksdienst voor het Cultureel Erfgoed</li>
         <li>React and Vite, hosted on Vercel</li>
         <li>IBM Plex Mono, by IBM, under the SIL Open Font License</li>
       </ul>
@@ -70,8 +75,14 @@ function Legal() {
       <p>
         The app asks your browser for your device’s position so it can centre the map. You
         can refuse, and you can withdraw permission at any time in your browser’s site
-        settings. The position is used only on your device to draw the map. It is not sent
-        to us, not stored by us and not shared.
+        settings. The position itself is used only on your device to draw the map.
+      </p>
+      <p>
+        To show monuments, the app sends the coordinates of the centre of the map to our
+        server each time the map stops moving, at street level and closer. When the map is
+        centred on you, those coordinates are close to your position. The server uses them
+        only to look up nearby monuments in our database and does not store them, apart
+        from the standard request logs our host keeps.
       </p>
       <p>
         To open the map quickly, the app also requests an approximate, city-level position
@@ -86,6 +97,10 @@ function Legal() {
       </p>
       <ul>
         <li>Vercel Inc., which hosts the app and may keep standard request logs.</li>
+        <li>
+          Supabase Inc., which hosts the monument database in the EU. Only our server
+          connects to it, not your browser.
+        </li>
         <li>Esri, which serves parts of the ArcGIS Maps SDK from js.arcgis.com.</li>
         <li>
           The OpenStreetMap Foundation, which serves map tiles from tile.openstreetmap.org.
@@ -112,6 +127,12 @@ function Legal() {
         Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>,
         available under the Open Database License. Mapping software: ArcGIS Maps SDK for
         JavaScript, © Esri.
+      </p>
+      <p>
+        Monument data © <a href="https://www.cultureelerfgoed.nl" target="_blank" rel="noreferrer">Rijksdienst
+        voor het Cultureel Erfgoed</a> (RCE), available under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY
+        4.0</a>, from the Rijksmonumentenregister via PDOK and RCE Linked Data. The app’s
+        copy can lag behind; the official register is authoritative.
       </p>
 
       <h2>No warranty</h2>
